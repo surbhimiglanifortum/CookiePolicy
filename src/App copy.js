@@ -1,5 +1,6 @@
 import React from "react";
 import CookieComponent from "./CookieComponentNew"
+import {Modal,Box, Typography, Button} from '@mui/material';
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -18,7 +19,7 @@ function loadScript(src) {
 const __DEV__ = document.domain === "localhost";
 
 function App() {
-  const [showOverlay, setOverlay] = React.useState(false);
+  const [showOverlay, setOverlay] = React.useState(true);
   const [showModal, setModal] = React.useState(false);
 
   //#region 
@@ -127,23 +128,16 @@ function App() {
   }
 //#endregion
 
-
-const style = {
-  position: 'absolute',
-  top: '20%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  border: '0px',
-  backgroundColor: 'white',
-  p: 4,
-  textAlign: 'center'
-};
-
-
   return (
     <>
+   
     <div style = {{textAlign: 'center'}}>
+    {showOverlay ? <div id="overlay" 
+    style = {{textAlign: 'center', position: "fixed",   top: "0",  left: "0", 
+     width: "100vw",  height: "100vh",   backgroundColor: "rgba(0,0,0,0.7)",  zIindex: "2"}}
+     onClick={()=>{setModal(true)}}
+     >
+      </div> : null}
      <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -156,11 +150,31 @@ const style = {
         </label>
         <input type="submit" value="Submit" />
       </form>
-       <CookieComponent />
+
+      {showModal? <Modal
+        open={showModal}
+        onClose={()=>{setModal(false)}}
+        aria-labelledby="modal-modal-title"
+      >
+        <Box sx={style} hideBackdrop={true}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Please accept the cookie policy to continue.
+          </Typography>
+          <Button
+            onClick={()=>{setModal(false)}}
+            colorScheme="teal"
+            mt={2}
+            variant="outlined"
+            style={{marginTop: "10px"}}
+          >
+            Ok
+          </Button>
+        </Box>
+      </Modal> : null}
+       <CookieComponent overlay= {()=>{setOverlay()}}/>
        </div>
     </>
   )
 }
-
 
 export default App;
